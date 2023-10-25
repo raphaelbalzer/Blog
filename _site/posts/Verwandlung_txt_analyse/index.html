@@ -99,7 +99,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -169,7 +169,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#textanalyse-von-kafkas-die-verwandlung" id="toc-textanalyse-von-kafkas-die-verwandlung" class="nav-link active" data-scroll-target="#textanalyse-von-kafkas-die-verwandlung">Textanalyse von Kafkas “Die Verwandlung”</a>
+  <ul class="collapse">
+  <li><a href="#datenimport" id="toc-datenimport" class="nav-link" data-scroll-target="#datenimport">Datenimport</a>
+  <ul class="collapse">
+  <li><a href="#tokenisierung" id="toc-tokenisierung" class="nav-link" data-scroll-target="#tokenisierung">Tokenisierung</a></li>
+  <li><a href="#entfernen-der-stop-words" id="toc-entfernen-der-stop-words" class="nav-link" data-scroll-target="#entfernen-der-stop-words">Entfernen der Stop-Words</a></li>
+  </ul></li>
+  <li><a href="#sentimentanalyse" id="toc-sentimentanalyse" class="nav-link" data-scroll-target="#sentimentanalyse">Sentimentanalyse</a></li>
+  <li><a href="#n-gram---analyse" id="toc-n-gram---analyse" class="nav-link" data-scroll-target="#n-gram---analyse">n-gram - Analyse</a>
+  <ul class="collapse">
+  <li><a href="#ohne-stopwords" id="toc-ohne-stopwords" class="nav-link" data-scroll-target="#ohne-stopwords">Ohne Stopwords</a></li>
+  <li><a href="#beitrag-von-verneinungen-zu-sentimenten" id="toc-beitrag-von-verneinungen-zu-sentimenten" class="nav-link" data-scroll-target="#beitrag-von-verneinungen-zu-sentimenten">Beitrag von Verneinungen zu Sentimenten</a></li>
+  </ul></li>
+  <li><a href="#themenanalyse" id="toc-themenanalyse" class="nav-link" data-scroll-target="#themenanalyse">Themenanalyse</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -388,7 +410,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 # ℹ 12,856 more rows</code></pre>
 </div>
 </div>
-<p>###Ohne Stopwords</p>
+<section id="ohne-stopwords" class="level3">
+<h3 class="anchored" data-anchor-id="ohne-stopwords">Ohne Stopwords</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>Verw_bigra_sep <span class="ot">&lt;-</span> Verwandlung_bigram <span class="sc">%&gt;%</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(bigram, <span class="fu">c</span>(<span class="st">"word1"</span>, <span class="st">"word2"</span>), <span class="at">sep =</span> <span class="st">" "</span>)<span class="sc">%&gt;%</span></span>
@@ -409,7 +432,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>###Beitrag von Verneinungen zu Sentimenten</p>
+</section>
+<section id="beitrag-von-verneinungen-zu-sentimenten" class="level3">
+<h3 class="anchored" data-anchor-id="beitrag-von-verneinungen-zu-sentimenten">Beitrag von Verneinungen zu Sentimenten</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Verneinungen <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"nicht"</span>, <span class="st">"nie"</span>, <span class="st">"niemals"</span>, <span class="st">"keine"</span>, <span class="st">"kein"</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -431,6 +456,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
 </section>
 <section id="themenanalyse" class="level2">
 <h2 class="anchored" data-anchor-id="themenanalyse">Themenanalyse</h2>
