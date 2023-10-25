@@ -1,0 +1,190 @@
+---
+title: "Miniprojekt DS"
+author: "Raphael Balzer"
+date: "2023-10-25"
+image: "kaefer.png"
+---
+
+# Textanalyse von Kafkas "Die Verwandlung"
+
+```{r output=FALSE}
+library(tokenizers)
+library(tidyverse)
+library(tidytext)
+library(ggthemes)
+library(topicmodels)
+library(tm)
+```
+
+## Datenimport
+
+Zunächst wird der Text importiert.
+
+```{r}
+Verwandlung <- read.delim2("Die_Verwandlung.txt")
+Verwandlung <- as_tibble(Verwandlung)
+Verwandlung <- Verwandlung[-c(1:24, 1812:2113), ]
+Verwandlung
+```
+
+### Tokenisierung
+
+```{r}
+Verwandlung_token <- Verwandlung %>% 
+  unnest_tokens(output = token, input = The.Project.Gutenberg.eBook.of.Die.Verwandlung) %>% 
+  filter(str_detect(token, "[a-z]"))
+Verwandlung_token
+```
+
+### Entfernen der Stop-Words
+
+```{r}
+data(stopwords_de, package = "lsa")
+
+stopwords_de <- tibble(word = stopwords_de)
+
+stopwords_de <- stopwords_de %>% 
+  rename(token = word)  
+
+Verwandlung_token <- Verwandlung_token %>% 
+  anti_join(stopwords_de)
+
+Verwandlung_token %>% 
+  count(token, sort = TRUE) %>% 
+  print()
+```
+
+## Sentimentanalyse
+
+```{r}
+data(sentiws, package = "pradadata")
+Verwandlung_senti <- Verwandlung_token %>% 
+  inner_join(sentiws, by = c("token" = "word")) %>% 
+  select(-inflections)
+Verwandlung_senti
+```
+
+```{r}
+Verwandlung_senti %>%
+  count(token, neg_pos, sort = TRUE) %>%
+  ungroup() %>%
+  group_by(neg_pos) %>%
+  slice_max(n, n = 10)%>%
+  ungroup() %>%
+  mutate(token = reorder(token, n)) %>%
+  ggplot(aes(n, token, fill = neg_pos)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~neg_pos, scales = "free_y") +
+  labs(x = "Häufigkeit",
+       y = "Wort") +
+  theme_minimal() +
+  scale_fill_tableau(palette = "Nuriel Stone")
+```
+
+```{r}
+Verwandlung_senti %>% 
+  group_by(neg_pos) %>% 
+  summarise(polarity_sum = sum(value),
+            polarity_count = n()) %>% 
+  mutate(polarity_prop = (polarity_count / sum(polarity_count)) %>% 
+           round(2))
+```
+
+```{r}
+Verwandlung_senti %>% 
+  distinct(token, .keep_all = TRUE) %>% 
+  mutate(value_abs = abs(value)) %>%
+  group_by(neg_pos) %>%
+  top_n(10, value_abs) %>%
+  mutate(token = reorder(token, value_abs)) %>%
+  ggplot(aes(value_abs, token, fill = neg_pos)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~neg_pos, scales = "free_y") +
+  labs(x = "Effektstärke",
+       y = "Wort") +
+  theme_minimal() +
+  scale_fill_tableau(palette = "Nuriel Stone")
+```
+
+## n-gram - Analyse
+
+Häufigkeiten der Bigramme
+
+```{r}
+Verwandlung_bigram <- 
+  Verwandlung %>%
+  unnest_tokens(bigram, The.Project.Gutenberg.eBook.of.Die.Verwandlung, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram))
+
+
+Verwandlung_bigram %>% 
+count(bigram, sort = TRUE) %>% 
+  print()
+```
+
+###Ohne Stopwords
+
+```{r}
+Verw_bigra_sep <- Verwandlung_bigram %>%
+  separate(bigram, c("word1", "word2"), sep = " ")%>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+Verw_bigra_sep %>%
+  unite(bigram, word1, word2, sep = " ") %>%
+  count(bigram, sort = TRUE) %>%
+  slice_max(n, n = 10)%>%
+  mutate(bigram = reorder(bigram, n)) %>%
+  ggplot(aes(n, bigram)) +
+  geom_col(fill = "#8175aa") +
+  labs(x = "Häufigkeit",
+       y = "Bigram") +
+  theme_minimal()
+```
+
+###Beitrag von Verneinungen zu Sentimenten
+
+```{r}
+Verneinungen <- c("nicht", "nie", "niemals", "keine", "kein")
+
+Verw_bigra_sep %>%
+  filter(word1 %in% Verneinungen) %>%
+  inner_join(sentiws, by = c(word2 = "word")) %>%
+  count(word1, word2, value, sort = TRUE) %>% 
+  mutate(Beitrag = n * value) %>%
+  arrange(desc(abs(Beitrag))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, Beitrag)) %>%
+  ggplot(aes(n * value, word2, fill = n * value > 0)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = "Sentiment-Wert * Häufigkeit",
+       y = "Verneinungen") +
+  theme_minimal()+
+  scale_fill_tableau("Nuriel Stone")
+```
+
+## Themenanalyse
+
+```{r}
+Verwandlung_dtm <- DocumentTermMatrix(Verwandlung_token)
+Verwandlung_lda <- LDA(Verwandlung_dtm, k = 4, control = list(seed = 42))
+```
+
+```{r}
+Verwandlung_themen <- tidy(Verwandlung_lda, matrix = "beta")
+
+Verwandlung_themen <- Verwandlung_themen %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 10) %>% 
+  ungroup() %>%
+  arrange(topic, -beta)
+
+Verwandlung_themen %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered() +
+  theme_minimal() +
+  scale_fill_tableau("Nuriel Stone")
+```
