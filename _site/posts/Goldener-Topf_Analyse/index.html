@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#textanalyse-von-kafkas-die-verwandlung" id="toc-textanalyse-von-kafkas-die-verwandlung" class="nav-link active" data-scroll-target="#textanalyse-von-kafkas-die-verwandlung">Textanalyse von Kafkas “Die Verwandlung”</a>
+  <li><a href="#textanalyse-von-kafkas-die-topf" id="toc-textanalyse-von-kafkas-die-topf" class="nav-link active" data-scroll-target="#textanalyse-von-kafkas-die-topf">Textanalyse von Kafkas “Die topf”</a>
   <ul class="collapse">
   <li><a href="#datenimport" id="toc-datenimport" class="nav-link" data-scroll-target="#datenimport">Datenimport</a>
   <ul class="collapse">
@@ -198,8 +198,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="textanalyse-von-kafkas-die-verwandlung" class="level1">
-<h1>Textanalyse von Kafkas “Die Verwandlung”</h1>
+<section id="textanalyse-von-kafkas-die-topf" class="level1">
+<h1>Textanalyse von Kafkas “Die topf”</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tokenizers)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
@@ -212,49 +212,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="datenimport">Datenimport</h2>
 <p>Zunächst wird der Text importiert.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Verwandlung <span class="ot">&lt;-</span> <span class="fu">read.delim2</span>(<span class="st">"Die_Verwandlung.txt"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Verwandlung <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(Verwandlung)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Verwandlung <span class="ot">&lt;-</span> Verwandlung[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>, <span class="dv">1812</span><span class="sc">:</span><span class="dv">2113</span>), ]</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Verwandlung</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>topf <span class="ot">&lt;-</span> <span class="fu">read.delim2</span>(<span class="st">"https://www.gutenberg.org/cache/epub/17362/pg17362.txt"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>topf <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(topf)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>topf <span class="ot">&lt;-</span> topf[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>, <span class="dv">2678</span><span class="sc">:</span><span class="dv">2979</span>), ]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>topf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1,787 × 1
-   The.Project.Gutenberg.eBook.of.Die.Verwandlung                          
-   &lt;chr&gt;                                                                   
- 1 I.                                                                      
- 2 Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er  
- 3 sich in seinem Bett zu einem ungeheueren Ungeziefer verwandelt. Er lag  
- 4 auf seinem panzerartig harten Rücken und sah, wenn er den Kopf ein wenig
- 5 hob, seinen gewölbten, braunen, von bogenförmigen Versteifungen         
- 6 geteilten Bauch, auf dessen Höhe sich die Bettdecke, zum gänzlichen     
- 7 Niedergleiten bereit, kaum noch erhalten konnte. Seine vielen, im       
- 8 Vergleich zu seinem sonstigen Umfang kläglich dünnen Beine flimmerten   
- 9 ihm hilflos vor den Augen.                                              
-10 »Was ist mit mir geschehen?« dachte er. Es war kein Traum. Sein Zimmer, 
-# ℹ 1,777 more rows</code></pre>
+<pre><code># A tibble: 2,653 × 1
+   The.Project.Gutenberg.eBook.of.Der.Goldene.Topf                  
+   &lt;chr&gt;                                                            
+ 1 DER GOLDENE TOPF                                                 
+ 2 von                                                              
+ 3 E.T.A. HOFFMANN:                                                 
+ 4 Mit 11 Federzeichnungen von Edmund Schaefer                      
+ 5 [Illustration: Titelbild. Die Frauenkirche in Dresden]           
+ 6 Erstes bis fünftes Tausend                                       
+ 7 Verlag von Gustav Kiepenheuer Weimar 1913                        
+ 8 ERSTE VIGILIE.                                                   
+ 9 Die Unglücksfälle des Studenten Anselmus. Des Konrektors Paulmann
+10 Sanitätsknaster und die goldgrünen Schlangen.                    
+# ℹ 2,643 more rows</code></pre>
 </div>
 </div>
 <section id="tokenisierung" class="level3">
 <h3 class="anchored" data-anchor-id="tokenisierung">Tokenisierung</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_token <span class="ot">&lt;-</span> Verwandlung <span class="sc">%&gt;%</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="at">output =</span> token, <span class="at">input =</span> The.Project.Gutenberg.eBook.of.Die.Verwandlung) <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>topf_token <span class="ot">&lt;-</span> topf <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="at">output =</span> token, <span class="at">input =</span> The.Project.Gutenberg.eBook.of.Der.Goldene.Topf) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(token, <span class="st">"[a-z]"</span>))</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Verwandlung_token</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>topf_token</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 19,151 × 1
-   token    
-   &lt;chr&gt;    
- 1 i        
- 2 als      
- 3 gregor   
- 4 samsa    
- 5 eines    
- 6 morgens  
- 7 aus      
- 8 unruhigen
- 9 träumen  
-10 erwachte 
-# ℹ 19,141 more rows</code></pre>
+<pre><code># A tibble: 29,219 × 1
+   token           
+   &lt;chr&gt;           
+ 1 der             
+ 2 goldene         
+ 3 topf            
+ 4 von             
+ 5 e.t.a           
+ 6 hoffmann        
+ 7 mit             
+ 8 federzeichnungen
+ 9 von             
+10 edmund          
+# ℹ 29,209 more rows</code></pre>
 </div>
 </div>
 </section>
@@ -268,29 +268,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>stopwords_de <span class="ot">&lt;-</span> stopwords_de <span class="sc">%&gt;%</span> </span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">token =</span> word)  </span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>Verwandlung_token <span class="ot">&lt;-</span> Verwandlung_token <span class="sc">%&gt;%</span> </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>topf_token <span class="ot">&lt;-</span> topf_token <span class="sc">%&gt;%</span> </span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(stopwords_de)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Joining with `by = join_by(token)`</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_token <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>topf_token <span class="sc">%&gt;%</span> </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(token, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3,506 × 2
-   token         n
-   &lt;chr&gt;     &lt;int&gt;
- 1 er          444
- 2 gregor      218
- 3 schwester   107
- 4 schon        95
- 5 ihn          91
- 6 mutter       91
- 7 vater        91
- 8 nun          79
- 9 denn         68
-10 zimmer       67
-# ℹ 3,496 more rows</code></pre>
+<pre><code># A tibble: 5,508 × 2
+   token           n
+   &lt;chr&gt;       &lt;int&gt;
+ 1 er            446
+ 2 anselmus      291
+ 3 archivarius   160
+ 4 denn          151
+ 5 du            144
+ 6 nun           137
+ 7 ihn           118
+ 8 veronika      105
+ 9 student        97
+10 wohl           94
+# ℹ 5,498 more rows</code></pre>
 </div>
 </div>
 </section>
@@ -299,36 +299,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="sentimentanalyse">Sentimentanalyse</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sentiws, <span class="at">package =</span> <span class="st">"pradadata"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>Verwandlung_senti <span class="ot">&lt;-</span> Verwandlung_token <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>topf_senti <span class="ot">&lt;-</span> topf_token <span class="sc">%&gt;%</span> </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(sentiws, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"token"</span> <span class="ot">=</span> <span class="st">"word"</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>inflections)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in inner_join(., sentiws, by = c(token = "word")): Detected an unexpected many-to-many relationship between `x` and `y`.
-ℹ Row 174 of `x` matches multiple rows in `y`.
-ℹ Row 3110 of `y` matches multiple rows in `x`.
+ℹ Row 2698 of `x` matches multiple rows in `y`.
+ℹ Row 3187 of `y` matches multiple rows in `x`.
 ℹ If a many-to-many relationship is expected, set `relationship =
   "many-to-many"` to silence this warning.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_senti</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>topf_senti</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 539 × 3
-   token          neg_pos   value
-   &lt;chr&gt;          &lt;chr&gt;     &lt;dbl&gt;
- 1 bereit         pos      0.004 
- 2 erhalten       pos      0.004 
- 3 hilflos        neg     -0.483 
- 4 ruhig          pos      0.382 
- 5 aufrecht       pos      0.004 
- 6 aufschlagen    neg     -0.04  
- 7 melancholisch  neg     -0.0048
- 8 undurchführbar neg     -0.0048
- 9 sorgen         neg     -0.0048
-10 sorgen         pos      0.223 
-# ℹ 529 more rows</code></pre>
+<pre><code># A tibble: 600 × 3
+   token     neg_pos   value
+   &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;
+ 1 glücklich pos      0.115 
+ 2 besonders pos      0.539 
+ 3 schnell   pos      0.117 
+ 4 lachen    pos      0.0135
+ 5 entziehen neg     -0.0048
+ 6 weise     pos      0.224 
+ 7 festlich  pos      0.202 
+ 8 kurz      neg     -0.0048
+ 9 langsam   neg     -0.0167
+10 einsam    neg     -0.163 
+# ℹ 590 more rows</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_senti <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>topf_senti <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(token, neg_pos, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(neg_pos) <span class="sc">%&gt;%</span></span>
@@ -347,7 +347,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_senti <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>topf_senti <span class="sc">%&gt;%</span> </span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(neg_pos) <span class="sc">%&gt;%</span> </span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">polarity_sum =</span> <span class="fu">sum</span>(value),</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">polarity_count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
@@ -357,12 +357,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 2 × 4
   neg_pos polarity_sum polarity_count polarity_prop
   &lt;chr&gt;          &lt;dbl&gt;          &lt;int&gt;         &lt;dbl&gt;
-1 neg            -52.7            241          0.45
-2 pos             37.2            298          0.55</code></pre>
+1 neg            -29.5            184          0.31
+2 pos             72.3            416          0.69</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_senti <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>topf_senti <span class="sc">%&gt;%</span> </span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(token, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">value_abs =</span> <span class="fu">abs</span>(value)) <span class="sc">%&gt;%</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(neg_pos) <span class="sc">%&gt;%</span></span>
@@ -384,41 +384,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="n-gram---analyse">n-gram - Analyse</h2>
 <p>Häufigkeiten der Bigramme</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_bigram <span class="ot">&lt;-</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  Verwandlung <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(bigram, The.Project.Gutenberg.eBook.of.Die.Verwandlung, <span class="at">token =</span> <span class="st">"ngrams"</span>, <span class="at">n =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>topf_bigram <span class="ot">&lt;-</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  topf <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(bigram, The.Project.Gutenberg.eBook.of.Der.Goldene.Topf, <span class="at">token =</span> <span class="st">"ngrams"</span>, <span class="at">n =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(bigram))</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>Verwandlung_bigram <span class="sc">%&gt;%</span> </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>topf_bigram <span class="sc">%&gt;%</span> </span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(bigram, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 12,866 × 2
-   bigram            n
-   &lt;chr&gt;         &lt;int&gt;
- 1 die schwester    66
- 2 der vater        53
- 3 die mutter       52
- 4 in der           49
- 5 er sich          44
- 6 daß er           38
- 7 und die          36
- 8 die tür          32
- 9 mit dem          29
-10 auf dem          27
-# ℹ 12,856 more rows</code></pre>
+<pre><code># A tibble: 19,046 × 2
+   bigram                    n
+   &lt;chr&gt;                 &lt;int&gt;
+ 1 in der                   89
+ 2 der student              85
+ 3 student anselmus         77
+ 4 archivarius lindhorst    72
+ 5 der archivarius          67
+ 6 in den                   49
+ 7 in die                   49
+ 8 der konrektor            46
+ 9 in dem                   46
+10 konrektor paulmann       46
+# ℹ 19,036 more rows</code></pre>
 </div>
 </div>
 <section id="ohne-stopwords" class="level3">
 <h3 class="anchored" data-anchor-id="ohne-stopwords">Ohne Stopwords</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>Verw_bigra_sep <span class="ot">&lt;-</span> Verwandlung_bigram <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>topf_bigra_sep <span class="ot">&lt;-</span> topf_bigram <span class="sc">%&gt;%</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(bigram, <span class="fu">c</span>(<span class="st">"word1"</span>, <span class="st">"word2"</span>), <span class="at">sep =</span> <span class="st">" "</span>)<span class="sc">%&gt;%</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word1 <span class="sc">%in%</span> stop_words<span class="sc">$</span>word) <span class="sc">%&gt;%</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word2 <span class="sc">%in%</span> stop_words<span class="sc">$</span>word)</span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>Verw_bigra_sep <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>topf_bigra_sep <span class="sc">%&gt;%</span></span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unite</span>(bigram, word1, word2, <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(bigram, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(n, <span class="at">n =</span> <span class="dv">10</span>)<span class="sc">%&gt;%</span></span>
@@ -438,7 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Verneinungen <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"nicht"</span>, <span class="st">"nie"</span>, <span class="st">"niemals"</span>, <span class="st">"keine"</span>, <span class="st">"kein"</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>Verw_bigra_sep <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>topf_bigra_sep <span class="sc">%&gt;%</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(word1 <span class="sc">%in%</span> Verneinungen) <span class="sc">%&gt;%</span></span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(sentiws, <span class="at">by =</span> <span class="fu">c</span>(<span class="at">word2 =</span> <span class="st">"word"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(word1, word2, value, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
@@ -461,19 +461,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="themenanalyse" class="level2">
 <h2 class="anchored" data-anchor-id="themenanalyse">Themenanalyse</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_dtm <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(Verwandlung_token)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>Verwandlung_lda <span class="ot">&lt;-</span> <span class="fu">LDA</span>(Verwandlung_dtm, <span class="at">k =</span> <span class="dv">4</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">seed =</span> <span class="dv">42</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>topf_dtm <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(topf_token)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>topf_lda <span class="ot">&lt;-</span> <span class="fu">LDA</span>(topf_dtm, <span class="at">k =</span> <span class="dv">4</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">seed =</span> <span class="dv">42</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Verwandlung_themen <span class="ot">&lt;-</span> <span class="fu">tidy</span>(Verwandlung_lda, <span class="at">matrix =</span> <span class="st">"beta"</span>)</span>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>topf_themen <span class="ot">&lt;-</span> <span class="fu">tidy</span>(topf_lda, <span class="at">matrix =</span> <span class="st">"beta"</span>)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Verwandlung_themen <span class="ot">&lt;-</span> Verwandlung_themen <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>topf_themen <span class="ot">&lt;-</span> topf_themen <span class="sc">%&gt;%</span></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(topic) <span class="sc">%&gt;%</span></span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(beta, <span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(topic, <span class="sc">-</span>beta)</span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>Verwandlung_themen <span class="sc">%&gt;%</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>topf_themen <span class="sc">%&gt;%</span></span>
 <span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">term =</span> <span class="fu">reorder_within</span>(term, beta, topic)) <span class="sc">%&gt;%</span></span>
 <span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(beta, term, <span class="at">fill =</span> <span class="fu">factor</span>(topic))) <span class="sc">+</span></span>
 <span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>

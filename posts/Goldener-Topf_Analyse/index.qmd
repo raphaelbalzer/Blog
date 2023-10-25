@@ -2,10 +2,10 @@
 title: "Miniprojekt DS"
 author: "Raphael Balzer"
 date: "2023-10-25"
-image: "kaefer.png"
+image: "topf.jpeg"
 ---
 
-# Textanalyse von Kafkas "Die Verwandlung"
+# Textanalyse von Kafkas "Die topf"
 
 ```{r output=FALSE}
 library(tokenizers)
@@ -21,19 +21,19 @@ library(tm)
 Zunächst wird der Text importiert.
 
 ```{r}
-Verwandlung <- read.delim2("Die_Verwandlung.txt")
-Verwandlung <- as_tibble(Verwandlung)
-Verwandlung <- Verwandlung[-c(1:24, 1812:2113), ]
-Verwandlung
+topf <- read.delim2("https://www.gutenberg.org/cache/epub/17362/pg17362.txt")
+topf <- as_tibble(topf)
+topf <- topf[-c(1:24, 2678:2979), ]
+topf
 ```
 
 ### Tokenisierung
 
 ```{r}
-Verwandlung_token <- Verwandlung %>% 
-  unnest_tokens(output = token, input = The.Project.Gutenberg.eBook.of.Die.Verwandlung) %>% 
+topf_token <- topf %>% 
+  unnest_tokens(output = token, input = The.Project.Gutenberg.eBook.of.Der.Goldene.Topf) %>% 
   filter(str_detect(token, "[a-z]"))
-Verwandlung_token
+topf_token
 ```
 
 ### Entfernen der Stop-Words
@@ -46,10 +46,10 @@ stopwords_de <- tibble(word = stopwords_de)
 stopwords_de <- stopwords_de %>% 
   rename(token = word)  
 
-Verwandlung_token <- Verwandlung_token %>% 
+topf_token <- topf_token %>% 
   anti_join(stopwords_de)
 
-Verwandlung_token %>% 
+topf_token %>% 
   count(token, sort = TRUE) %>% 
   print()
 ```
@@ -58,14 +58,14 @@ Verwandlung_token %>%
 
 ```{r}
 data(sentiws, package = "pradadata")
-Verwandlung_senti <- Verwandlung_token %>% 
+topf_senti <- topf_token %>% 
   inner_join(sentiws, by = c("token" = "word")) %>% 
   select(-inflections)
-Verwandlung_senti
+topf_senti
 ```
 
 ```{r}
-Verwandlung_senti %>%
+topf_senti %>%
   count(token, neg_pos, sort = TRUE) %>%
   ungroup() %>%
   group_by(neg_pos) %>%
@@ -82,7 +82,7 @@ Verwandlung_senti %>%
 ```
 
 ```{r}
-Verwandlung_senti %>% 
+topf_senti %>% 
   group_by(neg_pos) %>% 
   summarise(polarity_sum = sum(value),
             polarity_count = n()) %>% 
@@ -91,7 +91,7 @@ Verwandlung_senti %>%
 ```
 
 ```{r}
-Verwandlung_senti %>% 
+topf_senti %>% 
   distinct(token, .keep_all = TRUE) %>% 
   mutate(value_abs = abs(value)) %>%
   group_by(neg_pos) %>%
@@ -111,13 +111,13 @@ Verwandlung_senti %>%
 Häufigkeiten der Bigramme
 
 ```{r}
-Verwandlung_bigram <- 
-  Verwandlung %>%
-  unnest_tokens(bigram, The.Project.Gutenberg.eBook.of.Die.Verwandlung, token = "ngrams", n = 2) %>%
+topf_bigram <- 
+  topf %>%
+  unnest_tokens(bigram, The.Project.Gutenberg.eBook.of.Der.Goldene.Topf, token = "ngrams", n = 2) %>%
   filter(!is.na(bigram))
 
 
-Verwandlung_bigram %>% 
+topf_bigram %>% 
 count(bigram, sort = TRUE) %>% 
   print()
 ```
@@ -125,12 +125,12 @@ count(bigram, sort = TRUE) %>%
 ### Ohne Stopwords
 
 ```{r}
-Verw_bigra_sep <- Verwandlung_bigram %>%
+topf_bigra_sep <- topf_bigram %>%
   separate(bigram, c("word1", "word2"), sep = " ")%>%
   filter(!word1 %in% stop_words$word) %>%
   filter(!word2 %in% stop_words$word)
 
-Verw_bigra_sep %>%
+topf_bigra_sep %>%
   unite(bigram, word1, word2, sep = " ") %>%
   count(bigram, sort = TRUE) %>%
   slice_max(n, n = 10)%>%
@@ -147,7 +147,7 @@ Verw_bigra_sep %>%
 ```{r}
 Verneinungen <- c("nicht", "nie", "niemals", "keine", "kein")
 
-Verw_bigra_sep %>%
+topf_bigra_sep %>%
   filter(word1 %in% Verneinungen) %>%
   inner_join(sentiws, by = c(word2 = "word")) %>%
   count(word1, word2, value, sort = TRUE) %>% 
@@ -166,20 +166,20 @@ Verw_bigra_sep %>%
 ## Themenanalyse
 
 ```{r}
-Verwandlung_dtm <- DocumentTermMatrix(Verwandlung_token)
-Verwandlung_lda <- LDA(Verwandlung_dtm, k = 4, control = list(seed = 42))
+topf_dtm <- DocumentTermMatrix(topf_token)
+topf_lda <- LDA(topf_dtm, k = 4, control = list(seed = 42))
 ```
 
 ```{r}
-Verwandlung_themen <- tidy(Verwandlung_lda, matrix = "beta")
+topf_themen <- tidy(topf_lda, matrix = "beta")
 
-Verwandlung_themen <- Verwandlung_themen %>%
+topf_themen <- topf_themen %>%
   group_by(topic) %>%
   slice_max(beta, n = 10) %>% 
   ungroup() %>%
   arrange(topic, -beta)
 
-Verwandlung_themen %>%
+topf_themen %>%
   mutate(term = reorder_within(term, beta, topic)) %>%
   ggplot(aes(beta, term, fill = factor(topic))) +
   geom_col(show.legend = FALSE) +
