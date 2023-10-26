@@ -3,6 +3,7 @@ title: "Miniprojekt DS"
 author: "Raphael Balzer"
 date: "2023-10-25"
 image: "topf.jpeg"
+category: "Text-Analyse"
 ---
 
 # Textanalyse von E.T.A-Hoffmanns "Der goldene Topf"
@@ -17,8 +18,8 @@ library(tm)
 ```
 
 ## Datenimport
-Textanalyse von E.T.A-Hoffmanns "Der goldene Topf"
-Zunächst wird der Text importiert.
+
+Textanalyse von E.T.A-Hoffmanns "Der goldene Topf".
 
 ```{r}
 topf <- read.delim2("https://www.gutenberg.org/cache/epub/17362/pg17362.txt")
