@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "Miniprojekt DS\n\n\n\n\n\n\n\n\n\n\n\n\nOct 25, 2023\n\n\nRaphael Balzer\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nOct 13, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Miniprojekt DS\n\n\n\n\n\n\n\n\n\n\n\n\nOct 25, 2023\n\n\nRaphael Balzer\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/Goldener-Topf_Analyse/index.html",
@@ -47,12 +47,5 @@
     "title": "Miniprojekt DS",
     "section": "",
     "text": "topf_dtm &lt;- DocumentTermMatrix(topf_token)\ntopf_lda &lt;- LDA(topf_dtm, k = 4, control = list(seed = 42))\n\n\ntopf_themen &lt;- tidy(topf_lda, matrix = \"beta\")\n\ntopf_themen &lt;- topf_themen %&gt;%\n  group_by(topic) %&gt;%\n  slice_max(beta, n = 10) %&gt;% \n  ungroup() %&gt;%\n  arrange(topic, -beta)\n\ntopf_themen %&gt;%\n  mutate(term = reorder_within(term, beta, topic)) %&gt;%\n  ggplot(aes(beta, term, fill = factor(topic))) +\n  geom_col(show.legend = FALSE) +\n  facet_wrap(~ topic, scales = \"free\") +\n  scale_y_reordered() +\n  theme_minimal() +\n  scale_fill_tableau(\"Nuriel Stone\")"
-  },
-  {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
   }
 ]
