@@ -2,6 +2,7 @@
 title: "bikeshare prediction"
 author: "Raphael Balzer"
 date: "2023-08-16"
+image: "bike.png"
 categories:
   - EDA
   - Regression
