@@ -3,7 +3,8 @@ title: "Miniprojekt DS"
 author: "Raphael Balzer"
 date: "2023-10-25"
 image: "topf.jpeg"
-category: "Text-Analyse"
+categories: 
+  - Text-Analyse
 ---
 
 # Textanalyse von E.T.A-Hoffmanns "Der goldene Topf"
