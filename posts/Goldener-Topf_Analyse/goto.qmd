@@ -9,7 +9,7 @@ categories:
 
 # Textanalyse von E.T.A-Hoffmanns "Der goldene Topf"
 
-```{r output=FALSE}
+```{r output=FALSE, class="floating-code"}
 library(tokenizers)
 library(tidyverse)
 library(tidytext)
@@ -22,7 +22,7 @@ library(tm)
 
 Textanalyse von E.T.A-Hoffmanns "Der goldene Topf".
 
-```{r}
+```{r, class="floating-code"}
 topf <- read.delim2("https://www.gutenberg.org/cache/epub/17362/pg17362.txt")
 topf <- as_tibble(topf)
 topf <- topf[-c(1:24, 2678:2979), ]
@@ -31,7 +31,7 @@ topf
 
 ### Tokenisierung
 
-```{r}
+```{r, class="floating-code"}
 topf_token <- topf %>% 
   unnest_tokens(output = token, input = The.Project.Gutenberg.eBook.of.Der.Goldene.Topf) %>% 
   filter(str_detect(token, "[a-z]"))
@@ -40,7 +40,7 @@ topf_token
 
 ### Entfernen der Stop-Words
 
-```{r}
+```{r, class="floating-code"}
 data(stopwords_de, package = "lsa")
 
 stopwords_de <- tibble(word = stopwords_de)
@@ -58,7 +58,7 @@ topf_token %>%
 
 ## Sentimentanalyse
 
-```{r}
+```{r, class="floating-code"}
 data(sentiws, package = "pradadata")
 topf_senti <- topf_token %>% 
   inner_join(sentiws, by = c("token" = "word")) %>% 
@@ -66,7 +66,7 @@ topf_senti <- topf_token %>%
 topf_senti
 ```
 
-```{r}
+```{r, class="floating-code"}
 topf_senti %>%
   count(token, neg_pos, sort = TRUE) %>%
   ungroup() %>%
@@ -83,7 +83,7 @@ topf_senti %>%
   scale_fill_tableau(palette = "Nuriel Stone")
 ```
 
-```{r}
+```{r, class="floating-code"}
 topf_senti %>% 
   group_by(neg_pos) %>% 
   summarise(polarity_sum = sum(value),
@@ -92,7 +92,7 @@ topf_senti %>%
            round(2))
 ```
 
-```{r}
+```{r, class="floating-code"}
 topf_senti %>% 
   distinct(token, .keep_all = TRUE) %>% 
   mutate(value_abs = abs(value)) %>%
@@ -112,7 +112,7 @@ topf_senti %>%
 
 Häufigkeiten der Bigramme
 
-```{r}
+```{r, class="floating-code"}
 topf_bigram <- 
   topf %>%
   unnest_tokens(bigram, The.Project.Gutenberg.eBook.of.Der.Goldene.Topf, token = "ngrams", n = 2) %>%
@@ -126,7 +126,7 @@ count(bigram, sort = TRUE) %>%
 
 ### Ohne Stopwords
 
-```{r}
+```{r, class="floating-code"}
 topf_bigra_sep <- topf_bigram %>%
   separate(bigram, c("word1", "word2"), sep = " ")%>%
   filter(!word1 %in% stop_words$word) %>%
@@ -146,7 +146,7 @@ topf_bigra_sep %>%
 
 ### Beitrag von Verneinungen zu Sentimenten
 
-```{r}
+```{r, class="floating-code"}
 Verneinungen <- c("nicht", "nie", "niemals", "keine", "kein")
 
 topf_bigra_sep %>%
@@ -167,12 +167,12 @@ topf_bigra_sep %>%
 
 ## Themenanalyse
 
-```{r}
+```{r, class="floating-code"}
 topf_dtm <- DocumentTermMatrix(topf_token)
 topf_lda <- LDA(topf_dtm, k = 4, control = list(seed = 42))
 ```
 
-```{r}
+```{r, class="floating-code"}
 topf_themen <- tidy(topf_lda, matrix = "beta")
 
 topf_themen <- topf_themen %>%
