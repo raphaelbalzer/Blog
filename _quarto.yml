@@ -11,6 +11,7 @@ website:
 format:
   html:
     toc: true
+    df-print: paged
     theme: minty
     css: styles.css
 

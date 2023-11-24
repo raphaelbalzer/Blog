@@ -1,0 +1,198 @@
+---
+title: "bikeshare python"
+author: "Raphael Balzer"
+date: "2023-09-25"
+image: "bike.png"
+categories:
+  - EDA
+  - Regression
+  - python
+---
+
+# Vorhersage von Fahrradausleihungen
+Bikeshare-Vorhersage aber diesmal in Python.
+
+## EDA
+
+### Datenimport
+
+```{python}
+import pandas as pd
+```
+
+```{python}
+df=pd.read_csv('https://archive.ics.uci.edu/static/public/560/seoul+bike+sharing+demand.zip',encoding= 'unicode_escape',parse_dates=["Date"],dayfirst= "true")
+```
+
+```{python}
+df.head(5)
+```
+
+### Prüfen auf Datenanomalien
+
+```{python}
+df.info()
+```
+### Einzigartige Werte
+
+```{python}
+df.nunique().sort_values()
+```
+
+### Fehlende Werte
+
+```{python}
+df.isnull().sum()
+```
+
+## Vorverarbeitung
+
+### Dummyisierung
+
+```{python}
+df=pd.get_dummies(df,columns=['Holiday','Seasons','Functioning Day'],drop_first=True)
+```
+
+### Datetime Conversion
+
+```{python}
+df['Date'] = pd.to_datetime(df['Date'])
+
+df['Day']=df['Date'].dt.day
+df['Month']=df['Date'].dt.month
+df['Year']=df['Date'].dt.year
+df.drop(columns=['Date'],inplace=True)
+print(df.head())
+```
+
+## Modellierung
+
+### Vorbereitung
+
+#### Aufteilen in X und y
+
+```{python}
+y = df["Rented Bike Count"]
+y
+```
+
+```{python}
+X = df.drop(["Rented Bike Count"], axis = 1)
+X
+```
+#### Aufteilen in test und train
+
+```{python}
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
+print(X_train)
+print(X_test)
+```
+
+### Lineare Regression
+
+#### Training
+
+```{python}
+from sklearn.linear_model import LinearRegression
+
+lm = LinearRegression()
+lm.fit(X_train, y_train)
+```
+
+#### Vorhersage
+
+```{python}
+y_lm_train_pred = lm.predict(X_train)
+y_lm_test_pred = lm.predict(X_test)
+```
+
+#### Modellgüte
+
+```{python}
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+lm_train_rmse=np.sqrt(mean_squared_error(y_train, y_lm_train_pred))
+lm_train_rmse
+```
+
+```{python}
+lm_test_rmse = np.sqrt(mean_squared_error(y_test, y_lm_test_pred))
+lm_test_rmse
+```
+
+```{python}
+r2_score(y_train, y_lm_train_pred)
+```
+
+### Xgboost
+
+#### Tuning
+
+```{python}
+from sklearn.model_selection import GridSearchCV
+import xgboost as xgb
+
+param_grid = {
+    'n_estimators': [100, 200, 300],
+    'learning_rate': [0.01, 0.1, 0.2],
+    'max_depth': [3, 4, 5],
+}
+```
+
+```{python}
+xgb_model = xgb.XGBRegressor()
+```
+
+```{python}
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
+```
+
+```{python}
+grid_search.fit(X_train, y_train)
+```
+
+```{python}
+best_model = grid_search.best_estimator_
+best_model
+```
+
+#### Modellgüte
+
+```{python}
+best_model.score(X_test, y_test)
+```
+
+```{python}
+y_xgb_test_pred = best_model.predict(X_test)
+```
+
+```{python}
+xgb_test_rmse = np.sqrt(mean_squared_error(y_test, y_xgb_test_pred))
+xgb_test_rmse
+```
+
+#### Vorhersage
+
+```{python}
+X_test['pred'] = y_xgb_test_pred
+X_test.loc[X_test['Functioning Day_Yes'] == 0, 'pred'] = 0
+X_test.loc[X_test["pred"] < 0, "pred"] = 0
+X_test
+```
+```{python}
+np.sqrt(mean_squared_error(y_test, X_test["pred"]))
+```
+
+```{python}
+pred_df = X_test[['pred']]
+pred_df = pred_df.reset_index(drop=True)
+pred_df.insert(0, 'id', range(1, len(pred_df) + 1))
+pred_df
+```
+
+```{python}
+pred_df.to_csv('pred_values.csv', index = False)
+```
