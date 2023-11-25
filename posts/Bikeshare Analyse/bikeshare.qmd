@@ -17,7 +17,7 @@ Im Folgenden sollen Fahrradausleihungen vorhergesagt werden. Gegenstand der Anal
 
 ### Pakete laden
 
-```{r output=FALSE, class="floating-code"}
+```{r output=FALSE}
 library(ggcorrplot)
 library(easystats)
 library(tidymodels)
@@ -37,12 +37,12 @@ library(vip)
 
 ### Dateninmport
 
-```{r, class="floating-code"}
+```{r}
 library(readr)
 bikeshare_test <- read_csv("bikeshare_test.csv")
 ```
 
-```{r, class="floating-code"}
+```{r}
 library(readr)
 bikeshare_train <- read_csv("bikeshare_train.csv")
 bikeshare_train
@@ -52,30 +52,30 @@ bikeshare_train
 
 ### Korrelationen
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>% 
   ggcorr(label = TRUE)
 ```
 
 ### Prüfung auf fehlende Werte
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>% 
   summarise((across(everything(),~sum(is.na(.x)))))
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_test %>%
   summarise((across(everything(),~sum(is.na(.x)))))
 ```
 
-```{r, class="floating-code"}
+```{r}
 visdat::vis_dat(bikeshare_train)
 ```
 
 ### Boxplots
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>% 
   select(where(is.numeric)) %>% 
   pivot_longer(everything()) %>% 
@@ -85,7 +85,7 @@ ggplot(., aes(x = value)) +
   facet_wrap(~ name, scales = "free_x")
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_test %>% 
   select(where(is.numeric)) %>% 
   pivot_longer(everything()) %>% 
@@ -97,7 +97,7 @@ ggplot(., aes(x = value)) +
 
 ### Histogramme
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>% 
   select(where(is.numeric)) %>% 
   pivot_longer(everything()) %>% 
@@ -107,7 +107,7 @@ ggplot(., aes(x = value)) +
   facet_wrap(~ name, scales = "free_x")
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_test %>% 
   select(where(is.numeric)) %>% 
   pivot_longer(everything()) %>%  
@@ -119,7 +119,7 @@ ggplot(., aes(x = value)) +
 
 ### Diagramme mit Faktorvariablen
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>%
   pivot_longer(cols = 2:11) %>%  
   ggplot(., aes(x = value, fill = season)) +
@@ -129,7 +129,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>%
   pivot_longer(cols = 2:11) %>%  
   ggplot(., aes(x = value, fill = holiday)) +
@@ -139,7 +139,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>%
   pivot_longer(cols = 2:11) %>%  
   ggplot(., aes(x = value, fill = func)) +
@@ -149,7 +149,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>% 
   ggplot(aes(x = season, fill = holiday)) +
   geom_bar(alpha = 0.8) +
@@ -158,7 +158,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>% 
   ggplot(aes(x = season, fill = func)) +
   geom_bar(alpha = 0.8) +
@@ -167,7 +167,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>% 
   mutate(hour = factor(hour)) %>% 
   ggplot()+
@@ -177,7 +177,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>%  
   ggplot()+
   aes(hour, count) +
@@ -185,7 +185,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>%  
   ggplot()+
   aes(hour, temp) +
@@ -193,7 +193,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>%  
   ggplot()+
   aes(hour, humidity) +
@@ -201,7 +201,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>%  
   ggplot()+
   aes(hour, windspeed) +
@@ -209,7 +209,7 @@ bikeshare_train %>%
   theme_minimal()
 ```
 
-```{r, class="floating-code"}
+```{r}
 bikeshare_train %>%  
   ggplot()+
   aes(hour, visibility) +
@@ -225,7 +225,7 @@ Es gibt keine fehlenden Werte, Extremwerte sind auch äußerst rar. Durch die ex
 
 ### Aufteilung in Train- und Test-Sample
 
-```{r, class="floating-code"}
+```{r}
 set.seed(42)
 
 train_test_split <- initial_split(bikeshare_train, prop = 0.7497717)
@@ -237,7 +237,7 @@ bikeshare_test1 <- testing(train_test_split)
 
 Das Hauptaugenmerk bei den Rezepten liegt auf der Datumsspalte und den Interaktionen. Nach der Umwandlung in ein Datumsformat können mit step_date() einige interessante Features extrahiert werden. Außerdem gibt es einige interessante Interaktionseffekte. Die folgenden zwei Rezepte liefern die besten Vorhersagen und unterscheiden sich nur hinsichtlich der Normalisierung der Prädiktoren:
 
-```{r, class="floating-code"}
+```{r}
 rec72 <- 
   recipe(count ~., data = bikeshare_train1) %>%
   step_mutate(date = lubridate::dmy(date)) %>%
@@ -253,7 +253,7 @@ rec72 <-
   step_interact(terms = ~starts_with("func"):temp, role = "predictor") 
 ```
 
-```{r, class="floating-code"}
+```{r}
 rec81 <- 
   recipe(count ~., data = bikeshare_train1) %>%
   step_mutate(date = lubridate::dmy(date)) %>%
@@ -272,17 +272,17 @@ rec81 <-
 
 Es werden zwei starke Modelle berechnet, ein XGboost und ein Cubist. Die Wahl der Modellarten basiert hauptsächlich auf persönlichen Präferenzen. Es wird außerdem fünffache Kreuzvalidierung mit drei Wiederholungen verwendet.
 
-```{r, class="floating-code"}
+```{r}
 cv_scheme <- vfold_cv(bikeshare_train1,
   v = 5, 
   repeats = 3)
 ```
 
-```{r, class="floating-code"}
+```{r}
 doParallel::registerDoParallel()
 ```
 
-```{r, class="floating-code"}
+```{r}
 mod_tree <-
   decision_tree(cost_complexity = tune(),
                 tree_depth = tune(),
@@ -290,7 +290,7 @@ mod_tree <-
                 mode = "regression")
 ```
 
-```{r, class="floating-code"}
+```{r}
 mod_xg <- boost_tree(
   mtry = tune(), 
   trees = tune(), 
@@ -302,7 +302,7 @@ mod_xg <- boost_tree(
   set_mode("regression")
 ```
 
-```{r, class="floating-code"}
+```{r}
 mod_cubist <- cubist_rules(
   committees = tune(),
   neighbors = tune(),
@@ -311,7 +311,7 @@ mod_cubist <- cubist_rules(
   set_mode("regression")
 ```
 
-```{r, class="floating-code"}
+```{r}
 preproc <- list(rec81 = rec81, rec72 = rec72)
 
 models <- list(cubist = mod_cubist, xgboost = mod_xg)
@@ -329,18 +329,18 @@ workflow_map(
 
 ## Ergebnisse
 
-```{r, class="floating-code"}
+```{r}
 tune::autoplot(model_set) +
   theme(legend.position = "bottom")
 ```
 
-```{r, class="floating-code"}
+```{r}
 model_set %>% 
   collect_metrics() %>% 
   arrange(-mean)
 ```
 
-```{r, class="floating-code"}
+```{r}
 best_model_params <- 
   extract_workflow_set_result(model_set, "rec81_cubist") %>% 
   select_best()
@@ -360,7 +360,7 @@ fit_final <-
 collect_metrics(fit_final)
 ```
 
-```{r, class="floating-code"}
+```{r}
 fit_final %>% 
   extract_fit_parsnip() %>% 
   vip() 
@@ -368,7 +368,7 @@ fit_final %>%
 
 ## Trainieren und Fitten des Modells auf den ursprünglichen Trainingsdaten
 
-```{r, class="floating-code"}
+```{r}
 recfinal <- 
   recipe(count ~., data = bikeshare_train) %>%
   step_mutate(date = lubridate::dmy(date)) %>%
@@ -383,13 +383,13 @@ recfinal <-
   step_interact(terms = ~starts_with("func"):temp, role = "predictor")
 ```
 
-```{r, class="floating-code"}
+```{r}
 cv_scheme2 <- vfold_cv(bikeshare_train,
   v = 5, 
   repeats = 3)
 ```
 
-```{r, class="floating-code"}
+```{r}
 preproc2 <- list(rec81 = recfinal)
 
 models2 <- list(cubist = mod_cubist, xgboost = mod_xg)
@@ -405,18 +405,18 @@ workflow_map(
   verbose = TRUE)
 ```
 
-```{r, class="floating-code"}
+```{r}
 tune::autoplot(model_set2) +
   theme(legend.position = "bottom")
 ```
 
-```{r, class="floating-code"}
+```{r}
 model_set2 %>% 
   collect_metrics() %>% 
   arrange(-mean)
 ```
 
-```{r, class="floating-code"}
+```{r}
 best_model_params2 <- 
   extract_workflow_set_result(model_set2, "rec81_cubist") %>% 
   select_best()
@@ -438,7 +438,7 @@ fit_final2 <-
 
 Bei der Vorhersage ist zu beachten, dass es im Train-Sample keine Ausleihungen an funktionalen Tagen gab. Es ist eine vernünftige Annahme, dass dies im Test-Sample wahrscheinlich genauso sein wird. Daher werden manuell alle Vorhersagen für nicht funktionale Tage auf null gesetzt.
 
-```{r, class="floating-code"}
+```{r}
 final_preds <- 
   fit_final2 %>% 
   predict(new_data = bikeshare_test) %>% 
@@ -452,13 +452,13 @@ submission_df <-
   select(id, pred)
 ```
 
-```{r, class="floating-code"}
+```{r}
 submission_df %>% 
   ggplot() +
   aes(pred) +
   geom_histogram()
 ```
 
-```{r, class="floating-code"}
+```{r}
 write.csv(submission_df, file = "Balzer_Raphael_00163021_Prognose.csv", row.names = FALSE)
 ```
