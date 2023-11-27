@@ -18,11 +18,20 @@ Klassifikation von Hatespeech auf Grundlage der Germeval-Daten.
 ```{r output=FALSE}
 library(tidymodels)
 library(textrecipes)
+library(syuzhet)
+library(stringr)
+library(slider)
+library(tidytext)
+library(furrr)
+library(widyr)
+library(irlba)
 library(datawizard)
 library(lightgbm)
 library(bonsai)
 library(vip)
+data("schimpfwoerter", package = "pradadata")
 data("sentiws", package = "pradadata")
+data(wild_emojis, package = "pradadata")
 ```
 
 ### Datenimport
@@ -40,18 +49,134 @@ d_test <-
 names(d_train) <- c("text", "c1", "c2")
 names(d_test) <- c("text", "c1", "c2")
 ```
-## Feature Engineering
-Ziel ist es, auf Grundlage der Tweets einige nützliche Features zu generieren, die sich als Prädiktor für die AV (Hatespeech oder nicht) eignen.
 
+## Feature Engineering
+Ziel ist es, auf Grundlage der Tweets einige nützliche Features zu generieren, die sich als Prädiktor für die AV (Hatespeech oder nicht) eignen.\
+Da das Attribut `lexicon` Funktion `get_sentiment` ein Dataframe mit mindestens zwei Spalten mit dem Namen "word" und "value" haben muss, füge ich die Spalte "value" zum Schimpfwörterlexikon hinzu, um Wörter als Schimpfwort zu kennzeichnen.
+
+```{r}
+schimpfwoerter$value <- 1
+```
+
+### Emojis
+Um "wilde" Emojis zu kennzeichnen, verwende ich ein Lexikon, das solche Emojis enthält und schreibe eine Funktion, die zählt, wieviele wilde Emojis in einem Tweet vorkommen.
+
+```{r}
+count_wild_emojis <- function(text) {
+  # Initialisiere einen leeren Vektor für die Zählungen
+  counts <- numeric(length(wild_emojis$emoji))
+
+  # Iteriere über jedes Emoji und zähle die Übereinstimmungen im Text
+  for (i in seq_along(wild_emojis$emoji)) {
+    counts[i] <- sum(lengths(str_extract_all(text, wild_emojis$emoji[i])))
+  }
+
+  # Summiere die Gesamtanzahl der Übereinstimmungen
+  total_count <- sum(counts)
+  return(total_count)
+}
+
+dummy <- c("🗑", "bogen", "😠", "👹", "💩", "baby", "und", "🆗")
+count_wild_emojis(dummy)
+```
+### Word Embedding
+
+```{r}
+nested_words <- d_train %>%
+  select(text) %>% 
+  unnest_tokens(word, text) %>%
+  nest(words = c(word))
+```
+
+Skipgrams identifizieren:
+```{r}
+slide_windows <- function(tbl, window_size) {
+  skipgrams <- slider::slide(
+    tbl, 
+    ~.x, 
+    .after = window_size - 1, 
+    .step = 1, 
+    .complete = TRUE
+  )
+  
+  safe_mutate <- safely(mutate)
+  
+  out <- map2(skipgrams,
+              1:length(skipgrams),
+              ~ safe_mutate(.x, window_id = .y))
+  
+  out %>%
+    transpose() %>%
+    pluck("result") %>%
+    compact() %>%
+    bind_rows()
+}
+```
+
+PMI berechnen:
+```{r}
+tidy_pmi <- nested_words %>%
+  mutate(words = future_map(words, slide_windows, 4L)) %>%
+  unnest(words) %>%
+  pairwise_pmi(word, window_id)
+tidy_pmi
+```
+Wortvektoren erstellen:
+```{r}
+tidy_word_vectors <- tidy_pmi %>%
+  widely_svd(
+    item1, item2, pmi,
+    nv = 100, maxit = 1000
+  )
+
+tidy_word_vectors
+```
+
+## Modellierung
+
+### Rezepte definieren
+
+Rezept 1 enthält Schimpfwörter, Sentimentwerte, aggressive Emojis und Word Embeddings
 ```{r}
 rec1 <-
   recipe(c1 ~ ., data = d_train) %>% 
   update_role(c2, new_role = "ignore") %>%  
   step_text_normalization(text) %>%
+  step_mutate(schimpfw = get_sentiment(text,
+                                       method = "custom",
+                                       lexicon = schimpfwoerter)) %>% 
+  step_mutate(senti = get_sentiment(text,
+                                    method = "custom",
+                                    lexicon = sentiws)) %>%
+  step_mutate(wild_emojis_n = map_int(text, 
+                                      count_wild_emojis)) %>% 
   step_tokenize(text, token = "words") %>% 
   step_stem(text) %>% 
   step_tokenfilter(text, max_tokens = 1e2) %>%
-  step_stopwords(text, language = "de", stopword_source = "snowball") %>%  
+  step_stopwords(text, language = "de", stopword_source = "snowball") %>% 
+  step_word_embeddings(text,
+                       embeddings = tidy_word_vectors,
+                       aggregation = "mean")
+```
+
+Rezept 2 enthält statt Word-Embeddings tfidf.
+```{r}
+rec2 <-
+  recipe(c1 ~ ., data = d_train) %>% 
+  update_role(c2, new_role = "ignore") %>%  
+  step_text_normalization(text) %>%
+  step_mutate(schimpfw = get_sentiment(text,
+                                       method = "custom",
+                                       lexicon = schimpfwoerter)) %>% 
+  step_mutate(senti = get_sentiment(text,
+                                    method = "custom",
+                                    lexicon = sentiws)) %>%
+  step_mutate(wild_emojis_n = map_int(text, 
+                                      count_wild_emojis)) %>% 
+  step_tokenize(text, token = "words") %>% 
+  step_stem(text) %>% 
+  step_tokenfilter(text, max_tokens = 1e2) %>%
+  step_stopwords(text, language = "de", stopword_source = "snowball") %>% 
   step_tfidf(text)
 ```
 
@@ -62,9 +187,15 @@ baked <- rec1 %>%
 baked
 ```
 
-## Modellierung
+```{r}
+baked2 <- rec1 %>% 
+  prep() %>% 
+  bake(new_data = NULL)
+baked2
+```
+
 ### Modelle definieren
-Ich verwende für die Modellierung zum einen einen K-Nearest-Neighbour-Algorithums und zum anderen LightGBM.
+Ich verwende für die Modellierung zum einen einen K-Nearest-Neighbour-Algorithums und zum anderen XGBoost.
 
 ```{r}
 knn <- 
@@ -76,8 +207,8 @@ knn <-
   set_engine("kknn") %>% 
   set_mode("classification") %>% 
   translate()
-  
-lightgbm <- 
+
+xgb <- 
   boost_tree(
   mtry = tune(), 
   trees = tune(), 
@@ -86,7 +217,7 @@ lightgbm <-
   min_n = tune(), 
   loss_reduction = tune()
   ) %>%
-  set_engine("lightgbm") %>%
+  set_engine("xgboost") %>%
   set_mode("classification") %>%
   translate()
 ```
@@ -94,14 +225,14 @@ lightgbm <-
 ### Workflowset erstellen
 
 ```{r}
-preproc <- list(rec1 = rec1)
+preproc <- list(rec1 = rec1, rec2 = rec2)
 
-models <- list(lightgbm = lightgbm, knn = knn)
+models <- list(xgb = xgb, knn = knn)
 
 all_workflows <- workflow_set(preproc, models)
 
 model_set <-
-all_workflows %>% 
+all_workflows %>%
 workflow_map(
   resamples = vfold_cv(d_train,
   v = 2, 
@@ -127,14 +258,14 @@ LightGBM hat deutlich besser abgeschnitten als KNN. Wählen wir nun das beste Mo
 ### Finalisieren
 ```{r}
 best_model_params <- 
-  extract_workflow_set_result(model_set, "rec1_lightgbm") %>% 
+  extract_workflow_set_result(model_set, "rec1_xgb") %>% 
   select_best()
 ```
 
 ```{r}
 best_wf <- 
 all_workflows %>% 
-  extract_workflow("rec1_lightgbm")
+  extract_workflow("rec1_xgb")
 
 best_wf_finalized <- 
   best_wf %>% 
@@ -148,7 +279,6 @@ fit_final %>%
   extract_fit_parsnip() %>% 
   vip() 
 ```
-Die tfidf-Features scheinen die wichtigsten Features zu sein, gerade wenn es um Angela Merkel geht; interessant.
 
 ## Vorhersagen
 ```{r}
@@ -167,7 +297,7 @@ d_test
 
 
 ```{r}
-my_metrics <- metric_set(accuracy)
+my_metrics <- metric_set(accuracy, f_meas)
 my_metrics(d_test,
            truth = c1,
            estimate = .pred_class)
