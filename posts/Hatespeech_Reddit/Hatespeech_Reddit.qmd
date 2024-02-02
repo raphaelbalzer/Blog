@@ -2,11 +2,15 @@
 title: "Hate Speech auf Reddit"
 author: "Raphael Balzer"
 date: "2024-01-12"
+image: reddit.png
+categories: 
+  - Textanalyse
+  - Klassifikation
+  - Huggingface
 format:
   html:
     toc: true
     number-sections: true
-    theme: minty
 ---
 
 Ziel dieser Analyse ist es, die Reddit-Threads, deren ursprüngliche Posts das Stichwort "Kanye West" enthalten, in Bezug auf Sentiment, Wortwahl und Hate-Speech zu untersuchen. Hierbei ist vor allem die Veränderung der Sentimente der Posts im Zeitverlauf interessant. Dieser Post soll außerdem der Antwort auf die Frage näherkommen, ob die Nutzung der kostenlosen Reddit-API eine Alternative zur inzwischen kostenpflichtigen Twitter-API darstellt, um Hate Speech auf Social-Media-Plattformen zu analysieren. Der Post lässt sich grob in zwei Teile gliedern, nämlich wird zunächst die Analyse der Posts und Kommentare in Bezug auf Sentimente und Themen vorgenommen, woraufhin die Beiträge auf im zweiten Teil auf Hate Speech geprüft werden.
@@ -42,7 +46,6 @@ str(posts)
 ```{r}
 posts <- read_csv("posts.csv")
 ```
-
 
 ## Laden der Kommentare
 
