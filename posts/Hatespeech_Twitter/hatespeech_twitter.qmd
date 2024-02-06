@@ -1,12 +1,13 @@
 ---
 title: "Hate Speech auf Twitter"
-author: "Raphael Balzer"
-date: "2024-02-05"
+author: "Raphael Balzer, Matr.Nr.: 00163021"
+date: "2024-02-06"
 image: "twitter.jpg"
 categories:
   - Textanalyse
   - Klassifikation
   - Huggingface
+  - Python
   - tidymodels
 format:
   html:
@@ -14,9 +15,7 @@ format:
     number-sections: true
 ---
 
-# Klassifikation von Hate Speech
-
-## Einleitung
+# Einleitung
 
 Ziel dieses Posts ist es, Hate Speech auf Twitter zu klassifizieren. Hass im Internet ist nach wie vor ein großes gesellschaftliches Problem, weshalb es sich lohnt, genauer zu untersuchen, was diesen Hass ausmacht und wie man ihn zuverlässig und automatisiert erkennen kann. Hierfür liegt ein Datensatz vor, der eine Auswahl englischer als Hate Speech oder nicht Hate Speech markierter Tweets enthält. Die Analyse dieser Daten lässt sich in zwei Teile gliedern: Zunächst werden Methoden der explorativen Datenanalyse angewandt, um Muster und Auffälligkeiten in den Tweets zu identifizieren. Anschließend werden die gewonnenen Erkenntnisse genutzt, um sowohl Shallow-Learning- als auch Deep-Learning-Algorithmen darauf zu trainieren, Tweets korrekterweise als Hate Speech einzuordnen.
 
@@ -50,15 +49,15 @@ Bei den Daten handelt es sich um eine Auswahl englischer Tweets, die bereits auf
 d_hate <- read_csv("d_hate.csv")
 ```
 
-## Explorative Datenanalyse
+# Explorative Datenanalyse
 
-Ziel ist es, auf Grundlage der Tweets einige nützliche Features zu generieren, die sich als Prädiktor für die AV (Hatespeech oder nicht) eignen. Hierfür müssen zunächst einige Charakteristika von Tweets, die als Hate Speech gelten, herausgearbeitet werden. Die Methoden und der Code orientieren sich stark an dem Vorgehen, das in Julia Silges und David Robinsons Buch "Text Mining with R" (https://www.tidytextmining.com/) beschrieben wird. Für die nachfolgenden Visualisierungen wird eine mit Hilfe der Seite https://davidmathlogic.com/colorblind eigens erstellte Farbpalette verwendet, die gewährleistet, dass keine Art der Farbenblindheit die Lesbarkeit der Diagramme beeinträchtigt.
+Ziel ist es, auf Grundlage der Tweets einige nützliche Features zu generieren, die sich als Prädiktor für die AV (Hatespeech oder nicht) eignen. Hierfür müssen zunächst einige Charakteristika von Tweets, die als Hate Speech gelten, herausgearbeitet werden. Die Methoden und der Code orientieren sich stark an dem Vorgehen, das in Julia Silges und David Robinsons Buch "[Text Mining with R](https://www.tidytextmining.com/)" beschrieben wird. Für die nachfolgenden Visualisierungen wird eine mit Hilfe der Seite <https://davidmathlogic.com/colorblind> eigens erstellte Farbpalette verwendet, die gewährleistet, dass keine Art der Farbenblindheit die Lesbarkeit der Diagramme beeinträchtigt.
 
 ```{r}
 Uriah_Flint <- c("#8175AA", "#6FB899", "#3AA2C3", "#8BD4F9", "#DDCC77", "#CC6677", "#882255")
 ```
 
-### Vorverarbeitung
+## Vorverarbeitung
 
 Um eine sinnvolle Analyse durchzuführen, müssen noch einige Datenvorverarbeitungsschritte durchlaufen werden. Diese beinhalten die Tokenisierung, das Entfernen von Stopwords und das Bereinigen der Tweets, die Links oder ähnliche Elemente enthalten.
 
@@ -72,14 +71,14 @@ d_train <- training(train_test_split)
 d_test <- testing(train_test_split)
 ```
 
-#### Tokenisierung
+### Tokenisierung
 
 ```{r}
 tweets_token <- d_train %>%
   unnest_tokens(word, tweet)
 ```
 
-#### Entfernung der Stopwords
+### Entfernung der Stopwords
 
 ```{r}
 data(stopwords_en, package = "lsa")
@@ -89,7 +88,7 @@ tweets_token <- tweets_token %>%
   anti_join(stopwords_en)
 ```
 
-#### Sentimentwerte
+### Sentimentwerte
 
 ```{r}
 senti <- get_sentiments("afinn") %>% 
@@ -100,7 +99,7 @@ tweets_senti <- tweets_token %>%
 inner_join(senti)
 ```
 
-### Anteil von Hate Speech
+## Anteil von Hate Speech
 
 Um sich einen ersten Überblick über die Daten zu verschaffen, ist es sinnvoll, zunächst einmal den Anteil der als Hate Speech markierten Tweets zu überprüfen.
 
@@ -127,7 +126,7 @@ ggplot(class_totals, aes(x = "", y = class_total, fill = class)) +
 
 Der Anteil der Hate Speech in diesem Datensatz beträgt 25 Prozent. Die Tweets anderer Kategorien sind also deutlich in der Mehrheit.
 
-### Worthäufigkeiten
+## Worthäufigkeiten
 
 Einen weiteren interessanten Einblick gewähren die Worthäufigkeiten. Durch die Visualisierung der am meisten verwendeten Wörter und Wortpaare ist es bereits möglich, einen Einblick in das Vokabular zu erhalten und dieses unter den Klassen zu vergleichen.
 
@@ -186,7 +185,7 @@ tweets_bigram %>%
 
 Die Analyse der häufigsten Wortpaare deckt sich mit der Analyse der häufigsten Wörter. Sie bringt insofern neue Erkenntnisse, als deutlich wird, dass sich der Hass hauptsächlich gegen ethnische und sexuelle Minderheiten richtet. Dies wird anhand von Begriffen wie "white trash" und "fucking faggot" deutlich. Bemerkenswert ist ebenfalls, dass es sich keinesfalls hauptsächlich um Hass gegen Schwarze handelt, sondern genauso auch Menschen mit heller Hautfarbe ethnisch beleidigt werden.
 
-### Wortbeziehungen
+## Wortbeziehungen
 
 Im Folgenden werden alle Wortpaare, die häufiger als sechs Mal vorkommen, visualisiert. Hierdurch werden die Kontexte der Wörter deutlicher und die Beziehungen können uns Aufschluss darüber geben, in welchem Zusammenhang "hate" verwendet wird.
 
@@ -216,7 +215,7 @@ tweets_bigram_count %>%
 
 Zum Kontext des Wortes "hate" erhalten wir hier keine neuen Hinweise. Jedoch wird klar ersichtlich, in welchen Kombinationen Schimpfwörter verwendet werden. Außerdem werden Ambiguitäten deutlich, da Wörter wie "trash" und "colored" sowohl als rassistische Beleidigung als auch als Beschreibung von Alltagsgegenständen auftauchen.
 
-### Sentimentanalyse
+## Sentimentanalyse
 
 Zweck der Sentimentanalyse ist es, herauszufinden, ob die Sentimentausprägungen die beiden Klassen klar voneinander abgrenzen.
 
@@ -241,7 +240,7 @@ ggplot(tweets_senti2, aes(x = "", y = count, fill = neg_pos)) +
 
 In obigem Diagramm wird ersichtlich, dass hasslastige Tweets überwiegend negativ sind, während sich die Sentimente der anderen Klasse in der Waage halten. Das Sentiment ist also ein entscheidender Faktor bei der Klassifizierung von Hate Speech und sollte beim Training des Modells berücksichtigt werden.
 
-### Themenanalyse
+## Themenanalyse
 
 Die Themenanalyse soll Aufschluss darüber geben, ob es bestimmte Themengebiete gibt, die charakteristisch für Hate Speech sind.
 
@@ -280,7 +279,7 @@ tweets_themen_hate %>%
 
 Obwohl sich die Themen nicht eindeutig voneinander abgrenzen, sind dennoch schwache Muster erkennbar. Thema Eins scheint sich vor allem aus allgemeinen Obszönitäten zusammenzusetzen, während das zweite Thema aus Beleidigungen gegen Schwule und Schwarze und etwas härteren Wörtern wie "kill" und "shit" besteht. In Thema Drei und Vier treten Beleidigungen gegen Frauen sowie die LGBTQ-Community in den Vordergrund. Viel wichtiger als diese kleinen Unterschiede ist jedoch das große Bild der Themen, welches wie schon bei der Analyse der Worthäufigkeiten festgestellt, hauptsächlich aus ethnischen und sexuellen Beleidigungen und Schimpfwörtern besteht.
 
-### Schimpfwörter
+## Schimpfwörter
 
 Schimpfwörter scheinen eine große Rolle bei Hate Speech zu spielen. Deshalb erachte ich es als sinnvoll, Schimpfwörter als Feature in das spätere Rezept mit aufzunehmen. Hierzu verwende ich diese Liste, welche ich um ein paar Einträge (rassistische Beleidigungen) ergänzt habe: https://www.insult.wiki/list-of-insults.
 
@@ -307,7 +306,7 @@ ggplot(aes(x = "", y = n, fill = insult)) +
 
 Tatsächlich ist der Anteil der Beleidigungen in Hate Speech Tweets höher, jedoch fällt er deutlich geringer aus als erwartet.
 
-### Emojis
+## Emojis
 
 Die Überlegung, dass Hate Speech feindselige Emojis enthält, ist sehr plausibel. Um aggressive Emojis zu kennzeichnen, verwende ich ein von mir erstelltes Lexikon, das solche Emojis enthält und schreibe eine Funktion, die zählt, wieviele feindselige Emojis in einem Tweet vorkommen. Der Totenkopf ist nicht in der Liste der feindseligen Emojis enthalten, da dieser hauptsächlich als Synonym oder Steigerung des Lach-Emojis verwendet wird (engl.: "That's too funny. I'm dead!").
 
@@ -342,13 +341,13 @@ d_train %>%
 
 Die Vermutung, dass Hate Speech feindselige Emojis enthält, stellt sich in diesem Fall als falsch heraus. Da es keinen einzigen Emoji dieser Art gibt, wird dieser Ansatz für die Modellierung verworfen.
 
-## Modellierung
+# Modellierung
 
-### Shallow-Learning
+## Shallow-Learning
 
 In der Modellierung ist es nun das Ziel, einen Algorithmus darauf zu trainieren, möglichst präzise Hate Speech vorherzusagen. Der Algorithmus meiner Wahl ist der XGBoost. Zunächst werden jedoch noch Rezepte formuliert, die die Erkenntnisse aus der Analyse nun in nützliche Features umwandeln.
 
-#### Rezepte definieren
+### Rezepte definieren
 
 Rezept Eins enthält Schimpfwörter, Sentimentwerte und die Themenanalyse. Außerdem werden noch die üblichen Textverarbeitungsschritte durchgeführt sowie ein Tokenfilter angewandt.
 
@@ -399,7 +398,7 @@ baked2 <- rec2 %>%
 baked2
 ```
 
-#### Modell definieren
+### Modell definieren
 
 ```{r}
 xgb <- 
@@ -416,7 +415,7 @@ xgb <-
   translate()
 ```
 
-#### Workflowset erstellen
+### Workflowset
 
 Das Modell wird getuned. Hierfür wird zweifache Kreuzvalidierung mit einer Wiederholung verwendet. Der geringe Performance-Zuwachs durch intensiveres Tuning mit mehr Folds und Wiederholungen würde in diesem Fall nicht die höhere Rechenzeit rechtfertigen.
 
@@ -440,7 +439,7 @@ workflow_map(
   control = control_resamples(save_pred = TRUE))
 ```
 
-#### Ergebnisse
+### Ergebnisse
 
 ```{r}
 tune::autoplot(model_set) +
@@ -455,7 +454,7 @@ model_set %>%
 
 Rezept Zwei hat besser abgeschnitten als Rezept Eins. Wählen wir nun das beste Modell aus und fitten es:
 
-#### Finalisieren
+### Finalisieren
 
 ```{r}
 best_model_params <- 
@@ -495,14 +494,12 @@ wf_preds %>%
 
 Die Performance im Train-Sample fällt sehr gut aus, da die Vorhersagen mit einer Genauigkeit von rund 90 Prozent sehr präzise sind.
 
-#### Vorhersagen
+### Vorhersagen
 
 ```{r}
 preds <- predict(fit_final, d_test)
 preds
 ```
-
-#### Bestimmen der Vorhersagegüte im Test-Sample
 
 ```{r}
 d_test1 <-
@@ -521,9 +518,9 @@ my_metrics(d_test1,
 
 Auch im Test-Sample bewährt sich das Modell mit einer sehr hohen Genauigkeit.
 
-### Klassifikation mit Transformer
+## Klassifikation mit Transformer
 
-Ein weiterer Ansatz zur Klassifikation von Hate Speech ist es, kein eigenes Modell zu trainieren, sondern Zero-Shot-Learning anzuwenden. Das ergibt natürlich am meisten Sinn mit einem sehr fortgeschrittenen und komplexen Transformer-Modell, das bereits auf die Erkennung von Hate Speech trainiert wurde. Im Folgenden wird daher das Modell `roberta-hate-speech-dynabench-r4-target` von Facebook, welches auf Huggingface.co verfügbar ist, um die Tweets nach Hate Speech zu klassifizieren. Hierzu wird der Befehl `pipeline` aus der `transformers`-Library von Huggingface genutzt, um das Modell zu laden und auf das Test-Sample anzuwenden.
+Ein weiterer Ansatz zur Klassifikation von Hate Speech ist es, kein eigenes Modell zu trainieren, sondern Zero-Shot-Learning anzuwenden. Das ergibt natürlich am meisten Sinn mit einem sehr fortgeschrittenen und komplexen Transformer-Modell, das bereits auf die Erkennung von Hate Speech trainiert wurde. Im Folgenden wird daher das Modell `roberta-hate-speech-dynabench-r4-target` von Facebook, welches auf [Huggingface](https://huggingface.co/facebook/roberta-hate-speech-dynabench-r4-target) verfügbar ist, um die Tweets nach Hate Speech zu klassifizieren. Hierzu wird der Befehl `pipeline` aus der `transformers`-Library von Huggingface genutzt, um das Modell zu laden und auf das Test-Sample anzuwenden.
 
 ```{r}
 library(reticulate)
@@ -571,7 +568,7 @@ my_metrics2(tweets_hate,
 
 Die Performance des Modells ist objektiv gesehen gut, verglichen mit dem XGBoost mit einer Minute Trainingszeit fällt sie jedoch mager aus.
 
-### Neuronales Netzwerk
+## Neuronales Netzwerk
 
 Bisher wurde Hate Speech sowohl mit Hilfe eines auf den konkreten Daten trainierten Shallow-Learner als auch mit Hilfe eines vortrainierten Transformers klassifiziert. Im letzten Schritt dieses Posts sollen die Stärken dieser beiden Ansätze kombiniert werden, indem ein Deep-Learning-Algorithums, genauer gesagt ein Neuronales Netzwerk, auf den vorliegenden Daten trainiert wird. Das neuronale Netz verwendet ein vortrainiertes Wort-Einbettungsmodell mit 50 Dimensionen, das für die deutsche Sprache optimiert ist. Dieses Embedding-Modell ermöglicht es dem Netzwerk, semantische Repräsentationen der Wörter zu erlernen. Das Netzwerk besteht aus einer Eingabeschicht, die das Embedding-Modell enthält, gefolgt von einer vollständig verbundenen Schicht mit 32 Neuronen und einer Sigmoid-Aktivierungsfunktion. Weiterhin gibt es eine Schicht mit 24 Neuronen und einer ReLU-Aktivierung. Die Ausgabeschicht besteht aus einem einzelnen Neuron für binäre Klassifikation. Das Netzwerk wird mit dem Adam-Optimizer kompiliert und die binäre Kreuzentropie wird als Verlustfunktion verwendet. Die Accuracy wird als Metrik überwacht. Das Training erfolgt über 3 Epochen mit einer Batch-Größe von 48, wobei die Validierung anhand des Test-Samples durchgeführt wird.
 
@@ -651,6 +648,6 @@ print(conf_matrix)
 
 Das neuronale Netzwerk sagt das Train-Sample zwar perfekt vorher, hat jedoch vergleichsweise große Schwierigkeiten beim Test-Sample.
 
-## Fazit
+# Fazit
 
 Durch die explorative Datenanalyse war es möglich, einige relevante Charakteristika herauszuarbeiten, die Hate-Speech-Tweets klar von anderen Tweets abgrenzen. Hate Speech enthält nämlich einen großen Anteil an Beleidigungen und Schimpfwörtern sowie negativen Sentimenten. Diese Erkenntnisse waren für die Modellierung hilfreich, da es gelang, Features basierend auf der EDA zu generieren, die von hoher Relevanz für die Performance des Modells waren. Das Ziel der Modellierung war es, ein Modell zu trainieren, das Hate Speech in Tweets möglichst akkurat erkennt. Durch den kombinierten Ansatz aus Training und Deep Learning wurde dieses Ziel mit Erfolg erreicht, auch wenn die Deep Learning Modelle vergleichsweise schlecht abschnitten.
